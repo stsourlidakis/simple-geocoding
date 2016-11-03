@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple geocoding</title>
+</head>
+<body>
+	<textarea id="input" cols="50" rows="10"></textarea>
+	<textarea id="output" cols="50" rows="10"></textarea>
+	<br>
+	<input type="button" value="submit" id="submit">
+	<script
+			  src="https://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+	<script>
+	var token = '0edd1d5ed308b289857c';	//please change this if you fork the project
+	function request(str){
+		$.ajax({
+				url: "http://locationiq.org/v1/search.php?key="+token+"&format=json&q="+str,
+			})
+		.done(function( data ) {
+			var temp = [];
+			show(str, data[0].lat, data[0].lon);
+		});
+	}
+	function show(str, lat, lon){
+		var el = $('#output');
+		el.val(el.val()+str+': '+lat+','+lon+'\n');
+	}
+	$(document).ready(function(){
+		$('#submit').click(function(){
+			$('#output').val('');
+			var data = $('#input').val().split(',');
+			var i=0, n=data.length, id;console.log(n);
+			if(n!=0){
+				id = setInterval(function(){	//free plan is limited to 6 requests/sec
+					request(data[i]);
+					i++;
+					if(i>=n)clearInterval(id);
+				},200);
+			}
+		});
+	});
+	</script>
+</body>
+</html>

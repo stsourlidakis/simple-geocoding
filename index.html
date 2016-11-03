@@ -17,7 +17,7 @@
 	var token = '0edd1d5ed308b289857c';	//please change this if you fork the project
 	function request(str){
 		$.ajax({
-				url: "http://locationiq.org/v1/search.php?key="+token+"&format=json&q="+str,
+				url: "https://locationiq.org/v1/search.php?key="+token+"&format=json&q="+str,
 			})
 		.done(function( data ) {
 			var temp = [];

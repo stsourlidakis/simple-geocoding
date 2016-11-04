@@ -35,13 +35,20 @@
 				url: "https://locationiq.org/v1/search.php?key="+token+"&format=json&q="+str,
 			})
 		.done(function( data ) {
-			var temp = [];
-			show(str, data[0].lat, data[0].lon);
+			if(data.length == 0){
+				show(str);
+			} else {
+				show(str, data[0].lat, data[0].lon);
+			}
 		});
 	}
 	function show(str, lat, lon){
 		var el = $('#output');
-		el.val(el.val()+str+': '+lat+','+lon+'\n');
+		if(lat == 'undefined' || lon == 'undefined'){
+			el.val(el.val()+str+': -,-\n');
+		} else {
+			el.val(el.val()+str+': '+lat+','+lon+'\n');
+		}
 	}
 	$(document).ready(function(){
 		$('#submit').click(function(){

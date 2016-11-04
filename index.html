@@ -21,7 +21,7 @@
 		<textarea id="input" class="col-xs-6" rows="10"></textarea>
 		<textarea id="output" class="col-xs-6" rows="10"></textarea>
 		<div class="controls col-xs-12 text-center">
-			<div class="col-sm-4 options form-inline">
+			<div class="col-sm-6 options form-inline">
 				<div class="form-group">
 					<p class="form-control-static">Input format:</p>
   				</div>
@@ -30,7 +30,12 @@
 					<label class="radio-inline"><input type="radio" name="delimiter">Newlines</label>
 				</div>
 			</div>
-			<div class="col-sm-6"><input type="button" value="Submit" id="submit" class="btn btn-lg btn-primary"></div>
+			<div class="col-sm-6 options form-inline">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="output-addr" value="yes"> Include address
+				</label>
+			</div>
+			<div class="col-sm-12"><input type="button" value="Submit" id="submit" class="btn btn-lg btn-primary"></div>
 		</div>
 	</div>
 	<script
@@ -52,14 +57,18 @@
 			}
 		});
 	}
-	function show(addr, lat, lon){
+
+	function show(addr, lat, lon){console.log(addr);
 		lat = lat || '-';
 		lon = lon || '-';
 		var el = $('#output');
-		var str = addr+': '+lat+' '+lon+delimiter;
-
+		var str = lat+' '+lon+delimiter;
+		if( $('#output-addr').prop('checked') ){
+			str = addr+' '+str;
+		}
 		el.val(el.val().replace(addr+delimiter, str));	//include delimeter to avoid overwrite on duplicate text
 	}
+
 	$(document).ready(function(){
 		$('#submit').click(function(){
 			var inp = $('#input');

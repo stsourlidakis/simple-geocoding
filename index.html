@@ -39,32 +39,35 @@
 			  crossorigin="anonymous"></script>
 	<script>
 	var token = '0edd1d5ed308b289857c';	//please change this if you fork the project
-	function request(str){
+	var delimiter;
+	function request(addr){
 		$.ajax({
-				url: "https://locationiq.org/v1/search.php?key="+token+"&format=json&q="+str,
+				url: "https://locationiq.org/v1/search.php?key="+token+"&format=json&q="+addr,
 			})
 		.done(function( data ) {
 			if(data.length == 0){
-				show(str);
+				show(addr);
 			} else {
-				show(str, data[0].lat, data[0].lon);
+				show(addr, data[0].lat, data[0].lon);
 			}
 		});
 	}
-	function show(str, lat, lon){
+	function show(addr, lat, lon){
+		lat = lat || '-';
+		lon = lon || '-';
 		var el = $('#output');
-		if(lat == 'undefined' || lon == 'undefined'){
-			el.val(el.val()+str+': -,-\n');
-		} else {
-			el.val(el.val()+str+': '+lat+','+lon+'\n');
-		}
+		var str = addr+': '+lat+' '+lon+delimiter;
+
+		el.val(el.val().replace(addr+delimiter, str));	//include delimeter to avoid overwrite on duplicate text
 	}
 	$(document).ready(function(){
 		$('#submit').click(function(){
-			$('#output').val('');
-			var delimiter = $('#delimiter-csv').prop('checked')?',':'\n';
-			var data = $('#input').val().split(delimiter);
-			var i=0, n=data.length, id;console.log(n);
+			var inp = $('#input');
+			delimiter = $('#delimiter-csv').prop('checked')?',':'\n';
+			var data = inp.val().split(delimiter);
+			$('#output').val(inp.val()+delimiter);	//add the delimeter at the end so the replace at show() works
+
+			var i=0, n=data.length, id;
 			if(n!=0){
 				id = setInterval(function(){	//free plan is limited to 6 requests/sec
 					request(data[i]);

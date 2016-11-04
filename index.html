@@ -44,7 +44,7 @@
 			  crossorigin="anonymous"></script>
 	<script>
 	var token = '0edd1d5ed308b289857c';	//please change this if you fork the project
-	var delimiter;
+	var delimiter, totalAddr;
 	function request(addr){
 		$.ajax({
 				url: "https://locationiq.org/v1/search.php?key="+token+"&format=json&q="+addr,
@@ -55,10 +55,12 @@
 			} else {
 				show(addr, data[0].lat, data[0].lon);
 			}
+			totalAddr--;
+			if(totalAddr==0)allReturned();
 		});
 	}
 
-	function show(addr, lat, lon){console.log(addr);
+	function show(addr, lat, lon){
 		lat = lat || '-';
 		lon = lon || '-';
 		var el = $('#output');
@@ -69,14 +71,21 @@
 		el.val(el.val().replace(addr+delimiter, str));	//include delimeter to avoid overwrite on duplicate text
 	}
 
+	function allReturned(){
+		var el = $('#output');
+		el.val(el.val().slice(0, -1));
+	}
+
 	$(document).ready(function(){
 		$('#submit').click(function(){
 			var inp = $('#input');
 			delimiter = $('#delimiter-csv').prop('checked')?',':'\n';
-			var data = inp.val().split(delimiter);
-			$('#output').val(inp.val()+delimiter);	//add the delimeter at the end so the replace at show() works
+			var rawData = inp.val().trim();
+			var data = rawData.split(delimiter);
+			$('#output').val(rawData+delimiter);	//add the delimeter at the end so the replace at show() works
 
 			var i=0, n=data.length, id;
+			totalAddr = n;
 			if(n!=0){
 				id = setInterval(function(){	//free plan is limited to 6 requests/sec
 					request(data[i]);
